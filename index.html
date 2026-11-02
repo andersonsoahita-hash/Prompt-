@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#8F4A1F">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="Métis">
+<title>Métis by Stephen</title>
+<style>
+:root{--bg:#F6F1E8;--fg:#1B1A2E;--mut:#6A6A7A;--card:#FFFDF8;--line:#E4DCCB;--a:#8F4A1F;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#14121C;--fg:#F3EEE4;--mut:#A9A5B5;--card:#1E1B2A;--line:#322E42;--a:#D9A15F;color-scheme:dark}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;min-height:100dvh;display:grid;place-items:center;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+main{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:32px 26px;box-shadow:0 20px 50px -30px rgba(0,0,0,.35)}
+.lg{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.lg img{width:48px;height:48px;border-radius:14px}
+.lg b{font:700 30px/1 Georgia,"Times New Roman",serif;display:block}
+.lg i{font:italic 600 14px Georgia,serif;color:var(--a)}
+h1{font:700 22px/1.2 Georgia,serif;margin:0 0 8px}
+p{color:var(--mut);margin:0 0 18px}
+label{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+input[type=password],input[type=text]{width:100%;font-size:16px;padding:13px 15px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}
+input:focus{outline:2px solid var(--a);outline-offset:1px}
+.rm{display:flex;gap:10px;align-items:center;margin:14px 0 18px;font-size:14px;color:var(--mut)}
+.rm input{width:20px;height:20px;accent-color:var(--a)}
+button{width:100%;font:700 16px system-ui,sans-serif;padding:14px;border:0;border-radius:999px;background:var(--a);color:#fff;cursor:pointer}
+button[disabled]{opacity:.6}
+.er{color:#B3261E;font-size:14px;margin-top:14px;min-height:1.2em}
+@media (prefers-color-scheme:dark){.er{color:#FF8A80}button{color:#1B1A2E}}
+small{display:block;margin-top:18px;color:var(--mut);font-size:12px}
+</style>
+</head>
+<body>
+<main id="g">
+  <div class="lg"><img src="icon-192.png" alt=""><div><b>Métis</b><i>by Stephen</i></div></div>
+  <h1>Accès sur invitation</h1>
+  <p>Ce site est en test privé. Colle le jeton que Stephen t'a envoyé pour l'ouvrir.</p>
+  <form id="f" autocomplete="off">
+    <label for="t">Jeton d'accès</label>
+    <input id="t" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" required>
+    <label class="rm"><input id="k" type="checkbox" checked> Rester connecté sur cet appareil</label>
+    <button id="b" type="submit">Ouvrir le site</button>
+    <div class="er" id="e" role="alert"></div>
+  </form>
+  <small>Ton jeton est personnel et ne marche que sur un seul appareil. Il a une durée limitée.</small>
+</main>
+<script>
+(function(){
+var REPO="andersonsoahita-hash/Promptest",FILE="site.html",KEY="metis_tok",DEV="metis_dev";
+var g=document.getElementById("g"),f=document.getElementById("f"),t=document.getElementById("t"),k=document.getElementById("k"),b=document.getElementById("b"),e=document.getElementById("e");
+var API="https://api.github.com/repos/"+REPO;
+function rd(){try{return localStorage.getItem(KEY)||sessionStorage.getItem(KEY)||""}catch(x){return""}}
+function wr(v,keep){try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY);(keep?localStorage:sessionStorage).setItem(KEY,v)}catch(x){}}
+function clr(){try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY)}catch(x){}}
+function uuid(){try{if(crypto.randomUUID)return crypto.randomUUID()}catch(x){}return"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,12)}
+function dev(){var v="";try{v=localStorage.getItem(DEV)||"";if(!v){v=uuid();localStorage.setItem(DEV,v)}}catch(x){try{v=sessionStorage.getItem(DEV)||"";if(!v){v=uuid();sessionStorage.setItem(DEV,v)}}catch(y){v=uuid()}}return v}
+function hash(s){var u=new TextEncoder().encode(s);return crypto.subtle.digest("SHA-256",u).then(function(d){return Array.prototype.map.call(new Uint8Array(d),function(x){return("0"+x.toString(16)).slice(-2)}).join("").slice(0,16)})}
+function H(tok){return{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github+json"}}
+function fail(m){var x=new Error(m);x.known=true;return x}
+function openIssues(tok){return fetch(API+"/issues?state=open&per_page=100&_="+Date.now(),{headers:H(tok)}).then(function(r){if(!r.ok)throw fail("Ce jeton n'est pas configuré pour ce site. Demande-en un nouveau à Stephen.");return r.json()})}
+function mine(list,title){var m=list.filter(function(i){return i.title===title&&!i.pull_request});m.sort(function(a,b){return a.number-b.number});return m[0]||null}
+function same(issue,id){return(issue.body||"").indexOf("id:"+id)>=0||(issue.labels||[]).some(function(l){return l.name==="multi"})}
+var DENY="Ce jeton est déjà utilisé sur un autre appareil. Demande à Stephen de le réinitialiser, ou de t'en donner un nouveau.";
+function claim(tok){
+  var id=dev(),title="appareil:";
+  return hash(tok).then(function(h){title+=h;return openIssues(tok)}).then(function(list){
+    var ex=mine(list,title);
+    if(ex){if(same(ex,id))return true;throw fail(DENY)}
+    var body="id:"+id+"\ndate:"+new Date().toISOString()+"\nnavigateur:"+navigator.userAgent.slice(0,140);
+    return fetch(API+"/issues",{method:"POST",headers:Object.assign({"Content-Type":"application/json"},H(tok)),body:JSON.stringify({title:title,body:body})}).then(function(r){
+      if(!r.ok)throw fail("Ce jeton n'est pas configuré pour ce site. Demande-en un nouveau à Stephen.");
+      return openIssues(tok).then(function(l2){var w=mine(l2,title);if(w&&!same(w,id))throw fail(DENY);return true})
+    })
+  })
+}
+function load(tok,keep,auto){
+  b.disabled=true;e.textContent="";b.textContent="Ouverture…";var html="";
+  fetch(API+"/contents/"+FILE+"?ref=main&_="+Date.now(),{headers:{"Authorization":"Bearer "+tok,"Accept":"application/vnd.github.raw+json"}})
+  .then(function(r){
+    if(r.status===401){clr();throw fail("Ce jeton est invalide ou a expiré. Demande-en un nouveau à Stephen.")}
+    if(r.status===403||r.status===404){throw fail("Ce jeton n'a pas accès au site. Vérifie que tu as copié le jeton en entier.")}
+    if(!r.ok)throw new Error("http "+r.status);
+    return r.text();
+  }).then(function(h){html=h;return claim(tok)}).then(function(){
+    if(!auto||!rd())wr(tok,keep);
+    document.open();document.write(html);document.close();
+  }).catch(function(x){
+    if(x&&x.known&&/autre appareil|pas configuré/.test(x.message))clr();
+    b.disabled=false;b.textContent="Ouvrir le site";
+    e.textContent=(x&&x.known)?x.message:"Connexion impossible. Vérifie ta connexion internet puis réessaie. (détail : "+((x&&x.message)||"inconnu")+")";
+  });
+}
+if(/[?&]quitter/.test(location.search)){clr()}
+f.addEventListener("submit",function(ev){ev.preventDefault();var v=t.value.trim();if(v)load(v,k.checked,false)});
+var s=rd();if(s&&!/[?&]quitter/.test(location.search))load(s,true,true);
+})();
+</script>
+</body>
+</html>
