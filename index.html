@@ -339,7 +339,9 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 #av .bb.on{opacity:1;transform:none}
 #av .x{position:absolute;top:2px;right:-6px;width:26px;height:26px;border-radius:50%;border:0;background:var(--surface2);color:var(--fg);font:700 14px/1 var(--f-body);cursor:pointer;opacity:0;transition:opacity .2s;pointer-events:auto}
 #av:hover .x,#av .x:focus{opacity:.9}
-@keyframes avb{0%,100%{translate:0 0}50%{translate:0 -5px}}
+@keyframes avb{0%,100%{translate:0 0;scale:1 1}50%{translate:0 -8px;scale:1.015 1.02}}
+#av .w.hi{animation:avhi 1.5s ease-in-out 1}
+@keyframes avhi{0%{translate:0 0;rotate:0deg}12%{translate:0 -26px;rotate:-6deg;scale:.97 1.04}25%{translate:0 0;rotate:0deg;scale:1.05 .95}40%{translate:0 -18px;rotate:7deg}55%{translate:0 0;rotate:-5deg}70%{rotate:5deg}85%{rotate:-3deg}100%{translate:0 0;rotate:0deg;scale:1 1}}
 @media (max-width:560px){#av{height:clamp(120px,22vh,170px);right:4px}#av .x{opacity:.7}}
 @media (prefers-reduced-motion:reduce){#av .w{animation:none}}
 </style>
@@ -675,8 +677,11 @@ function tab(){var b=document.querySelector('nav button[aria-selected="true"]');
 var last="";function sync(){if(Date.now()<lock)return;var k=tab();if(k===last)return;last=k;turn(POSE[k]||"front");if(MSG[k])say(MSG[k])}
 var nav=document.querySelector("nav");if(nav)new MutationObserver(sync).observe(nav,{subtree:true,attributes:true,attributeFilter:["aria-selected"]});
 setInterval(sync,700);setTimeout(sync,1500);
+function hi(m){w.classList.remove("hi");void w.offsetWidth;w.classList.add("hi");if(m)say(m,2600)}
+setTimeout(function(){if(cur==="front")hi("Coucou ! 👋")},1800);
+setInterval(function(){if(cur==="front"&&!document.hidden)hi("Coucou ! 👋")},14000);
 var order=["front","side","back"];
-w.addEventListener("click",function(){lock=Date.now()+4000;var n=order[(order.indexOf(cur)+1)%3];turn(n);say(n==="back"?"Là, je regarde le site avec toi.":n==="side"?"De profil, c'est mon meilleur angle.":"Face à toi !",2600)});
+w.addEventListener("click",function(){lock=Date.now()+4000;var n=order[(order.indexOf(cur)+1)%3];turn(n);hi();say(n==="back"?"Là, je regarde le site avec toi.":n==="side"?"De profil, c'est mon meilleur angle.":"Face à toi !",2600)});
 av.querySelector(".x").addEventListener("click",function(){av.style.display="none";try{localStorage.setItem("metis_av","0")}catch(e){}});
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches){addEventListener("pointermove",function(e){if(e.pointerType==="touch")return;var r=w.getBoundingClientRect(),dx=(e.clientX-(r.left+r.width/2))/innerWidth;w.style.transform="rotate("+Math.max(-4,Math.min(4,dx*-8))+"deg)"},{passive:true});
 var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30){w.style.transform="rotate("+(y>ls?-3:3)+"deg)";clearTimeout(w._r);w._r=setTimeout(function(){w.style.transform=""},350);ls=y}},{passive:true})}
@@ -698,7 +703,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen</small></div></div>
 <script>
 (function(){
-var VER="20261102-215711",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261102-220319",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){try{return localStorage.getItem(KEY)||sessionStorage.getItem(KEY)||""}catch(e){return""}}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
