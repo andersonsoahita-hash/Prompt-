@@ -367,6 +367,7 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 .gsteps ol{margin:14px 0 4px;padding-left:22px;color:var(--fg);font-size:15px;line-height:1.55}.gsteps li{margin-bottom:8px}
 #insb{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));z-index:60;font:700 13px var(--f-body);padding:10px 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);box-shadow:var(--sh);cursor:pointer}
 .gc input[type=number]{-moz-appearance:textfield}.gc input+input{margin-top:10px}
+.gspam{background:#fff3e6;border:1px solid #e4480c;border-radius:10px;padding:10px 12px;font-weight:600}
 </style><script src="config.js"></script>
 <div id="gate" class="on" role="dialog" aria-modal="true" aria-label="Accès"></div>
 <header>
@@ -724,7 +725,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen</small></div></div>
 <script>
 (function(){
-var VER="20261105-025353",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261105-031018",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
@@ -786,7 +787,7 @@ function showRequest(){
     btn.disabled=true;er.textContent="";
     call("demande",{prenom:pr.value.trim(),nom:nm.value.trim(),age:ag.value.trim(),email:em.value.trim(),activite:ac.value.trim(),recu_de:rc.value.trim(),site:hp.value}).then(function(r){
       if(!r.ok){btn.disabled=false;er.textContent=r.msg||"Erreur, réessaie.";return}
-      var d=card();d.append(E("h2",{text:"Demande envoyée ✓"}),E("p",{text:r.msg||"Tu recevras ton jeton par e-mail dès que Stephen aura validé."}),E("p",{text:"Pense à regarder tes courriers indésirables si tu ne vois rien."}),E("button",{class:"gbtn",type:"button",text:"J'ai reçu mon jeton",onclick:function(){showToken()}}))})};
+      var d=card();d.append(E("h2",{text:"Demande envoyée ✓"}),E("p",{text:r.msg||"Tu recevras ton jeton par e-mail dès que Stephen aura validé."}),E("p",{class:"gspam",text:"⚠️ Important : l'e-mail vient de metisbysas@gmail.com et peut arriver dans tes SPAMS / courriers indésirables. Regarde-y, et si tu l'y trouves, appuie sur « Pas un spam » : ça débloque aussi les prochains messages."}),E("button",{class:"gbtn",type:"button",text:"J'ai reçu mon jeton",onclick:function(){showToken()}}))})};
   c.append(E("h2",{text:"Demander un accès"}),E("p",{text:"Remplis ceci, Stephen valide, et tu reçois ton jeton par e-mail."}),pr,nm,ag,em,ac,rc,hp,btn,er,
     E("p",{class:"gcgu",text:"Pour t'envoyer ton accès et te reconnaître, je garde ton prénom, ton nom, ton e-mail et, si tu les donnes, ton âge et ton activité. Je compte aussi tes ouvertures de prompts et tes avis pour améliorer Métis. Rien d'autre n'est collecté ni partagé."}),
     E("button",{class:"glater",type:"button",text:"J'ai déjà un jeton",onclick:function(){showToken()}}));
