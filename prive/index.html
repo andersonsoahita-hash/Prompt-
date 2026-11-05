@@ -368,6 +368,7 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 #insb{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));z-index:60;font:700 13px var(--f-body);padding:10px 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);box-shadow:var(--sh);cursor:pointer}
 .gc input[type=number]{-moz-appearance:textfield}.gc input+input{margin-top:10px}
 .gspam{background:#fff3e6;border:1px solid #e4480c;border-radius:10px;padding:10px 12px;font-weight:600}
+.fk.fok{color:#1a7f37;font-weight:700}.fk.fko{color:#c0270f;font-weight:700}
 </style><script src="config.js"></script>
 <div id="gate" class="on" role="dialog" aria-modal="true" aria-label="Accès"></div>
 <header>
@@ -725,7 +726,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen</small></div></div>
 <script>
 (function(){
-var VER="20261105-031018",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261105-032407",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
@@ -853,7 +854,7 @@ function decorate(p){
   var cm=E("textarea",{rows:"2",maxlength:"500",placeholder:"Un commentaire ? (facultatif)","aria-label":"Commentaire facultatif"}),send=E("button",{type:"button",class:"fs",text:"Envoyer"}),ok=E("small",{class:"fk"});
   var cur=st===undefined?null:st;
   function paint(){yes.setAttribute("aria-pressed",String(cur===1));no.setAttribute("aria-pressed",String(cur===0));cm.hidden=send.hidden=cur===null}
-  function post(u){cur=u;var a=avis();a[p.id]=u;s(KA,JSON.stringify(a));paint();ok.textContent="Merci !";call("avis",{pid:p.id,utile:u,comm:cm.value.trim()}).then(function(r){if(!r.ok)ok.textContent="Pas envoyé, réessaie."})}
+  function post(u){cur=u;var a=avis();a[p.id]=u;s(KA,JSON.stringify(a));paint();var txt=cm.value.trim();ok.className="fk";ok.textContent="Envoi…";send.disabled=yes.disabled=no.disabled=true;call("avis",{pid:p.id,utile:u,comm:txt}).then(function(r){send.disabled=yes.disabled=no.disabled=false;if(r&&r.ok){ok.className="fk fok";ok.textContent=txt?"✓ Commentaire bien envoyé, merci !":"✓ Avis bien enregistré, merci !";send.textContent="Renvoyer";if(txt)cm.value=""}else{ok.className="fk fko";ok.textContent="✗ Pas envoyé, réessaie."}})}
   yes.onclick=function(){post(1)};no.onclick=function(){post(0)};send.onclick=function(){post(cur===1?1:0)};
   box.append(E("b",{text:"Ce prompt t'a-t-il aidé ?"}),E("div",{class:"fr"},yes,no),cm,E("div",{class:"fr"},send,ok));paint();
   var last=pb.lastElementChild;pb.insertBefore(box,last);
