@@ -369,6 +369,7 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 .gc input[type=number]{-moz-appearance:textfield}.gc input+input{margin-top:10px}
 .gspam{background:#fff3e6;border:1px solid #e4480c;border-radius:10px;padding:10px 12px;font-weight:600}
 .fk.fok{color:#1a7f37;font-weight:700}.fk.fko{color:#c0270f;font-weight:700}
+#intro{z-index:3000!important}
 </style><script src="config.js"></script>
 <div id="gate" class="on" role="dialog" aria-modal="true" aria-label="Accès"></div>
 <header>
@@ -726,7 +727,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen</small></div></div>
 <script>
 (function(){
-var VER="20261105-032407",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261105-032611",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
