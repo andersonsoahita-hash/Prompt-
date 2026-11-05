@@ -724,7 +724,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen</small></div></div>
 <script>
 (function(){
-var VER="20261105-023959",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261105-025353",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
@@ -775,17 +775,19 @@ function showToken(msg){
 }
 function showRequest(){
   var c=card(),mk=function(ph,ac,type,max){return E("input",{type:type||"text",maxlength:max||"60",placeholder:ph,autocomplete:ac||"off"})};
-  var pr=mk("Prénom","given-name"),nm=mk("Nom (facultatif)","family-name"),ag=E("input",{type:"number",inputmode:"numeric",min:"5",max:"110",placeholder:"Âge (facultatif)"}),em=mk("Adresse e-mail","email","email","120"),ac=mk("Activité (facultatif)","off","text","80");
+  var pr=mk("Prénom","given-name"),nm=mk("Nom","family-name"),ag=E("input",{type:"number",inputmode:"numeric",min:"5",max:"110",placeholder:"Âge (facultatif)"}),em=mk("Adresse e-mail","email","email","120"),ac=mk("Activité (facultatif)","off","text","80"),rc=mk("J'ai reçu le lien de la part de… (nom)","off","text","80");
   var hp=E("input",{type:"text",name:"site",tabindex:"-1",autocomplete:"off","aria-hidden":"true",style:"position:absolute;left:-9999px;opacity:0;height:0"});
   var er=E("p",{class:"ge"}),btn=E("button",{class:"gbtn",type:"button",text:"Envoyer ma demande"});
   btn.onclick=function(){
     if(!pr.value.trim()){er.textContent="Indique ton prénom.";pr.focus();return}
+    if(!nm.value.trim()){er.textContent="Indique ton nom.";nm.focus();return}
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em.value.trim())){er.textContent="Indique une adresse e-mail valide : c'est là que tu recevras ton jeton.";em.focus();return}
+    if(!rc.value.trim()){er.textContent="Indique de la part de qui tu as reçu le lien.";rc.focus();return}
     btn.disabled=true;er.textContent="";
-    call("demande",{prenom:pr.value.trim(),nom:nm.value.trim(),age:ag.value.trim(),email:em.value.trim(),activite:ac.value.trim(),site:hp.value}).then(function(r){
+    call("demande",{prenom:pr.value.trim(),nom:nm.value.trim(),age:ag.value.trim(),email:em.value.trim(),activite:ac.value.trim(),recu_de:rc.value.trim(),site:hp.value}).then(function(r){
       if(!r.ok){btn.disabled=false;er.textContent=r.msg||"Erreur, réessaie.";return}
       var d=card();d.append(E("h2",{text:"Demande envoyée ✓"}),E("p",{text:r.msg||"Tu recevras ton jeton par e-mail dès que Stephen aura validé."}),E("p",{text:"Pense à regarder tes courriers indésirables si tu ne vois rien."}),E("button",{class:"gbtn",type:"button",text:"J'ai reçu mon jeton",onclick:function(){showToken()}}))})};
-  c.append(E("h2",{text:"Demander un accès"}),E("p",{text:"Remplis ceci, Stephen valide, et tu reçois ton jeton par e-mail."}),pr,nm,ag,em,ac,hp,btn,er,
+  c.append(E("h2",{text:"Demander un accès"}),E("p",{text:"Remplis ceci, Stephen valide, et tu reçois ton jeton par e-mail."}),pr,nm,ag,em,ac,rc,hp,btn,er,
     E("p",{class:"gcgu",text:"Pour t'envoyer ton accès et te reconnaître, je garde ton prénom, ton nom, ton e-mail et, si tu les donnes, ton âge et ton activité. Je compte aussi tes ouvertures de prompts et tes avis pour améliorer Métis. Rien d'autre n'est collecté ni partagé."}),
     E("button",{class:"glater",type:"button",text:"J'ai déjà un jeton",onclick:function(){showToken()}}));
 }
