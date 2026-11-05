@@ -1,6 +1,6 @@
 <!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style><link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#8F4A1F">
 <meta name="apple-mobile-web-app-title" content="Métis">
@@ -364,6 +364,9 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 .fb{margin:16px 0 4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface2)}.fb b{display:block;font-size:14px;margin-bottom:10px;color:var(--fg)}
 .fr{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}.fy,.fs{font:700 14px var(--f-body);padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;min-height:42px}.fy[aria-pressed=true],.fs{background:var(--btn);color:var(--ink);border-color:transparent}
 .fb textarea{width:100%;margin-top:10px;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--fg)}.fk{color:var(--muted)}
+.gsteps ol{margin:14px 0 4px;padding-left:22px;color:var(--fg);font-size:15px;line-height:1.55}.gsteps li{margin-bottom:8px}
+#insb{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:max(12px,env(safe-area-inset-bottom));z-index:60;font:700 13px var(--f-body);padding:10px 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);box-shadow:var(--sh);cursor:pointer}
+.gc input[type=number]{-moz-appearance:textfield}.gc input+input{margin-top:10px}
 </style><script src="config.js"></script>
 <div id="gate" class="on" role="dialog" aria-modal="true" aria-label="Accès"></div>
 <header>
@@ -721,7 +724,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen</small></div></div>
 <script>
 (function(){
-var VER="20261105-015153",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261105-023959",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
@@ -746,7 +749,7 @@ addEventListener("focus",check);
 (function(){
 "use strict";
 var API=(window.MB&&window.MB.API)||"";
-var KT="metis_t2",KD="metis_dev",KV="metis_pv",KC="metis_pc",KA="metis_avis";
+var KG="metis_guide",KT="metis_t2",KD="metis_dev",KV="metis_pv",KC="metis_pc",KA="metis_avis";
 function g(k){try{return localStorage.getItem(k)||""}catch(e){return""}}
 function s(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function d(k){try{localStorage.removeItem(k)}catch(e){}}
@@ -766,8 +769,25 @@ function showToken(msg){
   var btn=E("button",{class:"gbtn",type:"button",text:"Entrer"});
   var go=function(){var t=inp.value.trim();if(!t){inp.focus();return}tryLogin(t)};
   btn.onclick=go;inp.addEventListener("keydown",function(e){if(e.key==="Enter")go()});
-  c.append(E("h2",{text:"Accès réservé aux testeurs"}),E("p",{text:"Entre le jeton que Stephen t'a envoyé. Il marche sur un seul appareil."}),inp,btn,E("p",{class:"ge",id:"ge",text:msg||""}));
+  c.append(E("h2",{text:"J'ai mon jeton"}),E("p",{text:"Entre le jeton reçu par e-mail. Il enregistre ton appareil à la première connexion."}),inp,btn,E("p",{class:"ge",id:"ge",text:msg||""}),
+    E("button",{class:"glater",type:"button",text:"Je n'ai pas encore de jeton : faire une demande",onclick:function(){showRequest()}}));
   setTimeout(function(){try{inp.focus()}catch(e){}},50);
+}
+function showRequest(){
+  var c=card(),mk=function(ph,ac,type,max){return E("input",{type:type||"text",maxlength:max||"60",placeholder:ph,autocomplete:ac||"off"})};
+  var pr=mk("Prénom","given-name"),nm=mk("Nom (facultatif)","family-name"),ag=E("input",{type:"number",inputmode:"numeric",min:"5",max:"110",placeholder:"Âge (facultatif)"}),em=mk("Adresse e-mail","email","email","120"),ac=mk("Activité (facultatif)","off","text","80");
+  var hp=E("input",{type:"text",name:"site",tabindex:"-1",autocomplete:"off","aria-hidden":"true",style:"position:absolute;left:-9999px;opacity:0;height:0"});
+  var er=E("p",{class:"ge"}),btn=E("button",{class:"gbtn",type:"button",text:"Envoyer ma demande"});
+  btn.onclick=function(){
+    if(!pr.value.trim()){er.textContent="Indique ton prénom.";pr.focus();return}
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em.value.trim())){er.textContent="Indique une adresse e-mail valide : c'est là que tu recevras ton jeton.";em.focus();return}
+    btn.disabled=true;er.textContent="";
+    call("demande",{prenom:pr.value.trim(),nom:nm.value.trim(),age:ag.value.trim(),email:em.value.trim(),activite:ac.value.trim(),site:hp.value}).then(function(r){
+      if(!r.ok){btn.disabled=false;er.textContent=r.msg||"Erreur, réessaie.";return}
+      var d=card();d.append(E("h2",{text:"Demande envoyée ✓"}),E("p",{text:r.msg||"Tu recevras ton jeton par e-mail dès que Stephen aura validé."}),E("p",{text:"Pense à regarder tes courriers indésirables si tu ne vois rien."}),E("button",{class:"gbtn",type:"button",text:"J'ai reçu mon jeton",onclick:function(){showToken()}}))})};
+  c.append(E("h2",{text:"Demander un accès"}),E("p",{text:"Remplis ceci, Stephen valide, et tu reçois ton jeton par e-mail."}),pr,nm,ag,em,ac,hp,btn,er,
+    E("p",{class:"gcgu",text:"Pour t'envoyer ton accès et te reconnaître, je garde ton prénom, ton nom, ton e-mail et, si tu les donnes, ton âge et ton activité. Je compte aussi tes ouvertures de prompts et tes avis pour améliorer Métis. Rien d'autre n'est collecté ni partagé."}),
+    E("button",{class:"glater",type:"button",text:"J'ai déjà un jeton",onclick:function(){showToken()}}));
 }
 function showWait(t){var c=card();c.append(E("p",{class:"gw",text:t||"Vérification…"}))}
 function showRetry(msg,t){var c=card();c.append(E("h2",{text:"Oups"}),E("p",{text:msg}),E("button",{class:"gbtn",type:"button",text:"Réessayer",onclick:function(){tryLogin(t)}}))}
@@ -808,7 +828,9 @@ function enter(r){
   gate.classList.remove("on");gate.textContent="";
   try{renderTabs();route()}catch(e){}
   entered=true;
-  if(r.questionnaire)setTimeout(showQuest,9000);
+  if(!installed()&&g(KG)!=="1")setTimeout(function(){showGuide(true)},1500);
+  else if(r.questionnaire)setTimeout(showQuest,9000);
+  if(!installed())addInstallBtn();
 }
 /* ---------- mesures ---------- */
 var Q=[];
@@ -845,10 +867,35 @@ function showQuest(){
   c.append(E("div",{class:"gb"},E("b",{text:"Métis"}),E("small",{text:"by Stephen"})),E("h2",{text:"3 petites questions"}),E("label",{text:"Métis t'a fait gagner du temps ? (1 = pas du tout, 5 = beaucoup)"}),row1,E("label",{text:"Tu le recommanderais à un ami ?"}),row2,E("label",{text:"Qu'est-ce qui manque ou qui t'a gêné ?"}),q3,send,later,er);
   o.append(c);document.body.append(o);
 }
+
+/* ---------- installer sur l'écran d'accueil ---------- */
+var evInstall=null;
+addEventListener("beforeinstallprompt",function(e){e.preventDefault();evInstall=e});
+function installed(){try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone===true}catch(e){return false}}
+function addInstallBtn(){
+  if(document.getElementById("insb"))return;
+  var b=E("button",{id:"insb",type:"button",text:"📲 Installer l'appli",onclick:function(){showGuide(false)}});document.body.append(b);
+}
+function showGuide(auto){
+  if(document.getElementById("gd"))return;
+  var ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  var o=E("div",{id:"gd",class:"gate on",role:"dialog","aria-modal":"true"}),c=E("div",{class:"gc"}),body=E("div",{class:"gsteps"});
+  var bA=E("button",{type:"button",text:"Android"}),bI=E("button",{type:"button",text:"iPhone (iOS)"});
+  function steps(l){body.textContent="";var ol=E("ol");l.forEach(function(t){ol.append(E("li",{text:t}))});body.append(ol)}
+  function pick(k){bA.setAttribute("aria-pressed",String(k==="a"));bI.setAttribute("aria-pressed",String(k==="i"));
+    if(k==="a"){steps(["Ouvre Métis dans Chrome (pas dans le navigateur de WhatsApp ou d'Instagram).","Touche les trois points ⋮ en haut à droite.","Touche « Installer l'application » (ou « Ajouter à l'écran d'accueil »).","Ouvre l'icône Métis sur ton écran d'accueil et entre ton jeton une fois."]);
+      if(evInstall){var ib=E("button",{class:"gbtn",type:"button",text:"Installer maintenant",onclick:function(){evInstall.prompt();evInstall=null;ib.remove()}});body.append(ib)}}
+    else steps(["Ouvre Métis dans Safari (pas dans le navigateur de WhatsApp, d'Instagram ou Chrome).","Touche le bouton Partager : le carré avec une flèche vers le haut, en bas de l'écran.","Fais défiler et touche « Sur l'écran d'accueil », puis « Ajouter ».","Ouvre l'icône Métis sur ton écran d'accueil et entre ton jeton une fois (il est dans ton e-mail)."])}
+  bA.onclick=function(){pick("a")};bI.onclick=function(){pick("i")};
+  var done=E("button",{class:"gbtn",type:"button",text:"C'est fait",onclick:function(){s(KG,"1");o.remove();var b=document.getElementById("insb");if(b)b.remove()}}),later=E("button",{class:"glater",type:"button",text:"Plus tard",onclick:function(){s(KG,"1");o.remove()}});
+  c.append(E("div",{class:"gb"},E("b",{text:"Métis"}),E("small",{text:"by Stephen"})),E("h2",{text:"Mets Métis sur ton écran d'accueil"}),E("p",{text:"Comme une vraie appli, en 3 touches. Choisis ton téléphone :"}),E("div",{class:"qr"},bA,bI),body,done,later);
+  o.append(c);document.body.append(o);pick(ios?"i":"a");
+}
 /* ---------- démarrage ---------- */
 var m=location.hash.replace(/^#/,"").toUpperCase().match(/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/),t0="";
 if(m){t0=m[0];try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}}
+addEventListener("hashchange",function(){var x=location.hash.replace(/^#/,"").toUpperCase().match(/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/);if(x&&!entered){try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}tryLogin(x[0])}});
 t0=t0||g(KT);
-if(t0)tryLogin(t0);else showToken();
+if(t0)tryLogin(t0);else showRequest();
 })();
 </script>
