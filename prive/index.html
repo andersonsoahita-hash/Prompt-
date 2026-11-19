@@ -360,7 +360,7 @@ body{background:transparent}
 #fond{position:fixed;inset:0;z-index:-1;background:var(--veil),url(fond.webp) 50% 30%/cover no-repeat}
 html #gate,html .gate{background:var(--veilg),url(fond.webp) 50% 30%/cover no-repeat,var(--bg)}
 header{background:transparent!important;border-bottom:0!important;box-shadow:none!important;clip-path:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-header::before{content:"";position:absolute;z-index:-1;top:0;bottom:-26px;left:-100vmax;right:-100vmax;pointer-events:none;background:linear-gradient(180deg,var(--hdr) 0,var(--hdr) calc(100% - 26px),transparent 100%)}
+header::before{content:"";position:absolute;z-index:-1;top:0;bottom:-26px;left:calc(50% - 50vw);width:100vw;pointer-events:none;background:linear-gradient(180deg,var(--hdr) 0,var(--hdr) calc(100% - 26px),transparent 100%)}
 .hero h1,.sec h2,.sl .st h2,.contact h2,.thx h2,.goal strong,.goal .n{font-weight:800;letter-spacing:-.03em}
 nav button[aria-selected="true"]{color:#04201f}
 html .gspam{background:var(--surface2);border-color:var(--a);color:var(--fg)}
@@ -370,7 +370,8 @@ html .gspam{background:var(--surface2);border-color:var(--a);color:var(--fg)}
 .pc,.hitem,.gc{background:var(--glass)}
 .gc,.hitem{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 body{text-shadow:var(--halo)}
-button,.btn,input,textarea,select,.ov *,.pc *,.gc *,.hitem *,#upd *,#gate *,.gbtn,header *{text-shadow:none}
+button,.btn,input,textarea,select,#av,#av *,.ov *,.pc *,.gc *,.hitem *,#upd *,#gate *,.gbtn,header *{text-shadow:none}
+html,body{overflow-x:clip}
 </style>
 
 
@@ -776,7 +777,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen Anderson</small></div></div>
 <script>
 (function(){
-var VER="20261119-105028",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261119-105517",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
