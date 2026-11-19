@@ -2,7 +2,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#8F4A1F">
+<meta name="theme-color" content="#06161a">
 <meta name="apple-mobile-web-app-title" content="Métis">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Métis by Stephen Anderson</title>
@@ -344,6 +344,30 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 @keyframes avhi{0%{translate:0 0;rotate:0deg}12%{translate:0 -26px;rotate:-6deg;scale:.97 1.04}25%{translate:0 0;rotate:0deg;scale:1.05 .95}40%{translate:0 -18px;rotate:7deg}55%{translate:0 0;rotate:-5deg}70%{rotate:5deg}85%{rotate:-3deg}100%{translate:0 0;rotate:0deg;scale:1 1}}
 @media (max-width:560px){#av{height:clamp(120px,22vh,170px);right:4px}#av .x{opacity:.7}}
 @media (prefers-reduced-motion:reduce){#av .w{animation:none}}
+</style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"><style id="skin3">/* skin3 : fond photo (DSC08563), palette turquoise/vert, Inter ; structure et style des boutons inchangés */
+:root{--glass:var(--surface);--hdr:color-mix(in srgb,var(--bg) 88%,transparent);--bg:#06161a;--surface:#0e2328;--surface2:#143038;--line:#25454d;--fg:#EEF8F6;--muted:#9FBFBD;--a:#46D6CE;--a2:#7BE08F;--lime:#46D6CE;--peri:#8FE0B0;--ink:#031E22;--pill:#46D6CE;
+ --grad:linear-gradient(95deg,#2FC9C9,#7BE08F);--btn:linear-gradient(95deg,#1FB6C6,#4FD08A);--g1:rgba(70,214,206,.14);--g2:rgba(123,224,143,.10);--g3:rgba(40,150,190,.12);
+ --f-display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--sh:0 18px 40px -22px rgba(0,0,0,.85);
+ --veil:linear-gradient(180deg,rgba(4,20,24,.72),rgba(4,20,24,.86) 55%,rgba(4,20,24,.94));color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F2F8F7;--surface:#fff;--surface2:#E3EEEC;--line:#CBDCD9;--fg:#0E2A2C;--muted:#3A5256;--a:#0F7A85;--a2:#25805A;--lime:#BFE8E1;--peri:#CFE8D8;--ink:#fff;--pill:#0F7A85;--gl:34%;--gs:75%;--glass:rgba(255,255,255,.70);--hdr:rgba(247,252,251,.62);
+ --grad:linear-gradient(95deg,#0F7A85,#25805A);--btn:linear-gradient(95deg,#0F8892,#25805A);--g1:rgba(15,122,133,.08);--g2:rgba(37,128,90,.07);--g3:rgba(40,150,190,.06);--sh:0 14px 30px -20px rgba(10,50,55,.35);
+ --veil:linear-gradient(180deg,rgba(242,248,247,.34),rgba(242,248,247,.60) 45%,rgba(242,248,247,.84));color-scheme:light}}
+:root[data-theme="light"]{--bg:#F2F8F7;--surface:#fff;--surface2:#E3EEEC;--line:#CBDCD9;--fg:#0E2A2C;--muted:#3A5256;--a:#0F7A85;--a2:#25805A;--lime:#BFE8E1;--peri:#CFE8D8;--ink:#fff;--pill:#0F7A85;--gl:34%;--gs:75%;--glass:rgba(255,255,255,.70);--hdr:rgba(247,252,251,.62);
+ --grad:linear-gradient(95deg,#0F7A85,#25805A);--btn:linear-gradient(95deg,#0F8892,#25805A);--g1:rgba(15,122,133,.08);--g2:rgba(37,128,90,.07);--g3:rgba(40,150,190,.06);--sh:0 14px 30px -20px rgba(10,50,55,.35);
+ --veil:linear-gradient(180deg,rgba(242,248,247,.34),rgba(242,248,247,.60) 45%,rgba(242,248,247,.84));color-scheme:light}
+html{background:var(--bg)}
+body{background:transparent}
+#fond{position:fixed;inset:0;z-index:-1;background:var(--veil),url(fond.webp) 50% 30%/cover no-repeat}
+html #gate,html .gate{background:var(--veilg),url(fond.webp) 50% 30%/cover no-repeat,var(--bg)}
+header{background:var(--hdr);box-shadow:0 0 0 100vmax var(--hdr);clip-path:inset(0 -100vmax)}
+.hero h1,.sec h2,.sl .st h2,.contact h2,.thx h2,.goal strong,.goal .n{font-weight:800;letter-spacing:-.03em}
+nav button[aria-selected="true"]{color:#04201f}
+html .gspam{background:var(--surface2);border-color:var(--a);color:var(--fg)}
+:root{--veilg:linear-gradient(180deg,rgba(4,20,24,.30),rgba(4,20,24,.55) 60%,rgba(4,20,24,.82))}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--veilg:linear-gradient(180deg,rgba(242,248,247,.35),rgba(242,248,247,.6) 60%,rgba(242,248,247,.85))}}
+:root[data-theme="light"]{--veilg:linear-gradient(180deg,rgba(242,248,247,.35),rgba(242,248,247,.6) 60%,rgba(242,248,247,.85))}
+.pc,.hitem,.gc{background:var(--glass)}
+.gc,.hitem{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 </style>
 
 
@@ -392,6 +416,7 @@ nav button[aria-selected="true"]{background:var(--lime);color:#0b0b12}
 
 .gbtn2{width:100%;font:800 16px var(--f-body);padding:14px;border-radius:12px;border:2px solid var(--a);background:color-mix(in srgb,var(--a) 8%,var(--surface));color:var(--a);cursor:pointer;min-height:48px;margin:0 0 4px}.gor{text-align:center;font-size:13px!important;margin:12px 0 14px!important}
 </style><script src="config.js"></script>
+<div id="fond" aria-hidden="true"></div>
 <div id="gate" class="on" role="dialog" aria-modal="true" aria-label="Accès"></div>
 <header>
   <div class="bar">
@@ -748,7 +773,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <div id="upd" role="alertdialog" aria-modal="true" aria-labelledby="updt"><div class="bx"><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/></svg></div><h2 id="updt"></h2><p id="updp"></p><button id="updb" type="button"></button><small>Métis by Stephen Anderson</small></div></div>
 <script>
 (function(){
-var VER="20261105-121516",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
+var VER="20261119-101644",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
 function tok(){return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
