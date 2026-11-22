@@ -596,8 +596,8 @@ function contactEl(){
     if(!cc.checked){err.textContent="Coche la case de consentement pour envoyer ton message.";return}
     sb.disabled=true;sb.textContent="Envoi…";
     let tz="";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone}catch(x){}
-    try{const r=await fetch("https://formsubmit.co/ajax/andersonsoahita@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({_subject:"Métis · "+tp.value+" · "+nm.value.trim(),_template:"table",_captcha:"false",nom:nm.value.trim(),email:em.value.trim(),situation:st.value,lieu:ville.value.trim()||"non précisé",telephone:tel.value.trim()||"non précisé",linkedin:li.value.trim()||"non précisé",sujet:tp.value,reponse_preferee:rp.value,fuseau_horaire:tz||"inconnu",langue_navigateur:navigator.language||"",envoye_le:new Date().toLocaleString("fr-FR"),message:ms.value.trim()})});
-      const j=await r.json();if(!(j.success===true||j.success==="true"))throw 0;const pn=nm.value.trim().split(" ")[0];f.reset();thanks(pn)}
+    try{const r=await fetch((window.MB&&window.MB.API)||"https://script.google.com/macros/s/AKfycbyLo0W6LgdjH011htuAaIaHrbY3nETvDsaZgeZquJVMC7IvTqw5gwxx2humsgnEaWDENw/exec",{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},redirect:"follow",body:JSON.stringify({a:"contact",nom:nm.value.trim(),email:em.value.trim(),situation:st.value,lieu:ville.value.trim()||"non précisé",telephone:tel.value.trim()||"non précisé",linkedin:li.value.trim()||"non précisé",sujet:tp.value,reponse_preferee:rp.value,fuseau_horaire:tz||"inconnu",langue_navigateur:navigator.language||"",envoye_le:new Date().toLocaleString("fr-FR"),message:ms.value.trim()})});
+      const j=await r.json();if(j.ok!==true)throw 0;const pn=nm.value.trim().split(" ")[0];f.reset();thanks(pn)}
     catch(x){err.textContent="L'envoi a échoué. Réessaie dans un instant."}
     sb.disabled=false;sb.textContent="Envoyer"});
   return el("section",{class:"contact",id:"contact"},el("div",{class:"ct"},el("h2",{},"Une question sur l'",gt("IA"),", un projet ?"),el("p",{text:"Écris-moi : dis qui tu es et de quoi tu veux parler. Je réponds rapidement."}),el("p",{class:"sg",text:"Stephen Anderson Soahita"})),f)}
@@ -704,7 +704,7 @@ var ls=0;addEventListener("scroll",function(){var y=scrollY;if(Math.abs(y-ls)>30
 <script>
 (function(){
 var VER="20261102-220319",REPO="andersonsoahita-hash/Promptest",KEY="metis_tok",box=document.getElementById("upd");
-function tok(){try{return localStorage.getItem(KEY)||sessionStorage.getItem(KEY)||""}catch(e){return""}}
+function tok(){try{localStorage.removeItem(KEY);sessionStorage.removeItem(KEY)}catch(e){}return""}
 function show(t,p,b,fn){document.getElementById("updt").textContent=t;document.getElementById("updp").textContent=p;var bt=document.getElementById("updb");bt.textContent=b;bt.onclick=fn;box.classList.add("on");try{bt.focus()}catch(e){}}
 var shown=false;
 function check(){

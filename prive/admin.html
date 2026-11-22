@@ -2,6 +2,8 @@
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0a0e1f">
 <title>Métis · Admin — by Stephen</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap">
@@ -105,10 +107,11 @@ td{text-align:right;padding:9px 6px;border-top:1px solid var(--gb);font-variant-
     <h1>Métis · Admin</h1>
     <div class="mu">Tableau de bord des testeurs · <b style="color:var(--ac)">by Stephen</b></div>
     <form id="lf" autocomplete="off">
-      <label for="k">Ta clé admin</label>
+      <label for="k">Ta clé admin (ou un code à usage unique)</label>
       <input id="k" type="password" autocomplete="current-password" placeholder="Colle ta clé ici" required>
       <div id="apirow" hidden><label for="api">Adresse du serveur Google</label><input id="api" type="url" placeholder="https://script.google.com/macros/s/…/exec"></div>
-      <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-size:13.5px;font-weight:500;margin-top:16px"><input id="rem" type="checkbox" style="width:auto"> Rester connecté sur cet appareil</label>
+      <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-size:13.5px;font-weight:500;margin-top:16px"><input id="rem" type="checkbox" style="width:auto"> Rester connecté sur cet appareil (60 jours)</label>
+      <div class="mu" style="font-size:12.5px;margin-top:6px">Ta clé n'est jamais gardée sur l'appareil : seul un jeton d'appareil, que tu peux révoquer, y reste.</div>
       <button class="p" style="width:100%;margin-top:16px" id="lb">Entrer</button>
       <div id="le" class="mu" style="color:var(--no);margin-top:10px;min-height:20px"></div>
     </form>
@@ -128,7 +131,7 @@ td{text-align:right;padding:9px 6px;border-top:1px solid var(--gb);font-variant-
 var API=(window.MB&&window.MB.API)||'';
 try{if(!API)API=localStorage.getItem('mb_api')||''}catch(e){}
 var DEMO=location.hash==='#demo';
-var S={key:'',data:null,dem:null,view:'dash',tv:'list',filtre:'tous',q:'',avis:null,quest:null,busy:false};
+var S={dt:'',k:'',data:null,dem:null,view:'dash',tv:'list',filtre:'tous',q:'',avis:null,quest:null,busy:false};
 var $=function(s){return document.querySelector(s)};
 function h(tag,a){var e=document.createElement(tag);a=a||{};for(var k in a){if(k==='class')e.className=a[k];else if(k==='text')e.textContent=a[k];else if(k.slice(0,2)==='on')e.addEventListener(k.slice(2),a[k]);else if(a[k]!==false&&a[k]!=null)e.setAttribute(k,a[k])}
   for(var i=2;i<arguments.length;i++){var c=arguments[i];if(c==null||c===false)continue;if(Array.isArray(c))c.forEach(function(x){if(x!=null&&x!==false)e.append(x)});else e.append(c)}return e}
@@ -143,7 +146,7 @@ function ini(n){return(n||'?').trim().charAt(0).toUpperCase()}
 function call(op,x){
   if(DEMO)return demoCall(op,x);
   if(!API)return Promise.reject({msg:'Adresse du serveur manquante.'});
-  var body=JSON.stringify(Object.assign({a:'adm',k:S.key,op:op},x||{}));
+  var body=JSON.stringify(Object.assign({a:'adm',op:op},S.dt?{dt:S.dt}:{k:S.k},x||{}));
   return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body,redirect:'follow'}).then(function(r){return r.json()}).then(function(j){
     if(!j.ok)return Promise.reject(j);return j}).catch(function(e){
     if(e&&e.msg)return Promise.reject(e);return Promise.reject({msg:'Connexion impossible. Vérifie ta connexion Internet.'})})
@@ -155,12 +158,24 @@ function charger(silencieux){
 }
 
 /* ---------- connexion ---------- */
-function deco(){S.key='';try{sessionStorage.removeItem('mb_k');localStorage.removeItem('mb_k')}catch(e){}$('#app').className='';$('#bar').hidden=true;$('#login').hidden=false;$('#apirow').hidden=!!(window.MB&&window.MB.API);}
+/* La clé admin sert UNE fois pour obtenir un jeton d'appareil ; seul ce jeton (révocable, limité dans le temps) est gardé. */
+function connexion(secret,garder){
+  if(!API)return Promise.reject({msg:'Adresse du serveur manquante.'});
+  return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({a:'adm',k:secret,op:'connexion',rester:!!garder}),redirect:'follow'}).then(function(r){return r.json()}).then(function(j){
+    if(!j.ok)return Promise.reject(j);return j}).catch(function(e){
+    if(e&&e.msg)return Promise.reject(e);return Promise.reject({msg:'Connexion impossible. Vérifie ta connexion Internet.'})})
+}
+function garderDt(dt,garder){try{(garder?localStorage:sessionStorage).setItem('mb_dt',dt);(garder?sessionStorage:localStorage).removeItem('mb_dt')}catch(e){}}
+function oublierTout(){try{sessionStorage.removeItem('mb_k');localStorage.removeItem('mb_k');sessionStorage.removeItem('mb_dt');localStorage.removeItem('mb_dt')}catch(e){}}
+function deco(){var dt=S.dt;S.dt='';S.k='';oublierTout();
+  if(dt&&!DEMO&&API){try{fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({a:'adm',dt:dt,op:'deconnecter'}),redirect:'follow'}).catch(function(){})}catch(e){}}$('#app').className='';$('#bar').hidden=true;$('#login').hidden=false;$('#apirow').hidden=!!(window.MB&&window.MB.API);}
 $('#lf').addEventListener('submit',function(ev){ev.preventDefault();var k=$('#k').value.trim();if(!k)return;
   var a=$('#api').value.trim();if(a&&!(window.MB&&window.MB.API)){API=a;try{localStorage.setItem('mb_api',a)}catch(e){}}
-  S.key=k;$('#le').textContent='';$('#lb').disabled=true;
-  call('ping').then(function(){try{if($('#rem').checked)localStorage.setItem('mb_k',k);else sessionStorage.setItem('mb_k',k)}catch(e){}$('#login').hidden=true;demarrer()}).catch(function(e){$('#le').textContent=e.msg||'Erreur'}).then(function(){$('#lb').disabled=false})});
-function demarrer(){$('#app').className='on';$('#bar').hidden=false;charger();clearInterval(demarrer.t);if(!DEMO)demarrer.t=setInterval(function(){if(!document.hidden&&S.key&&!document.querySelector('#md.on'))charger('sonde')},45000)}
+  $('#le').textContent='';$('#lb').disabled=true;var garder=$('#rem').checked;
+  connexion(k,garder).then(function(j){S.dt=j.dt;S.k='';garderDt(j.dt,garder);$('#k').value='';$('#login').hidden=true;demarrer()}).catch(function(e){
+    if(e&&e.code==='inconnu'){S.k=k;S.dt='';return call('ping').then(function(){$('#k').value='';$('#login').hidden=true;demarrer()}).catch(function(e2){S.k='';$('#le').textContent=e2.msg||'Erreur'})}   // serveur pas encore mis à jour : connexion sans mémorisation
+    $('#le').textContent=e.msg||'Erreur'}).then(function(){$('#lb').disabled=false})});
+function demarrer(){$('#app').className='on';$('#bar').hidden=false;charger();clearInterval(demarrer.t);if(!DEMO)demarrer.t=setInterval(function(){if(!document.hidden&&(S.dt||S.k)&&!document.querySelector('#md.on'))charger('sonde')},45000)}
 
 /* ---------- navigation ---------- */
 var ICONS={dash:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',tests:'<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M17 11a3 3 0 100-6M21 20c0-2.4-1.4-4.4-3.4-5.4"/>',dem:'<path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/>',avis:'<path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/>',quest:'<path d="M9 5h10M9 12h10M9 19h10"/><path d="M4 5l1 1 2-2M4 12l1 1 2-2M4 19l1 1 2-2"/>',reg:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>'};
@@ -349,7 +364,11 @@ function vueReg(m){var g=S.data.reglages;
   var zc=h('div',{class:'card glass',style:'margin-top:12px;border-color:var(--no)'},h('h2',{style:'color:var(--no)',text:'Zone de danger'}),h('p',{class:'mu',text:'Effacements définitifs, sans retour possible. Tes prompts et ta clé admin ne sont jamais touchés.'}));
   dz.forEach(function(x){zc.append(h('div',{class:'row',style:'margin-top:8px'},h('div',{class:'sp'},h('b',{text:x[1]}),h('div',{class:'mu',text:x[2]})),h('button',{class:'s d',type:'button',text:'Effacer',onclick:function(){confirmerTexte(x[1]+' ?',x[2]+' Cette action est définitive.','Effacer définitivement',function(){call('purge',{cible:x[0]}).then(function(){toast('Effacé');charger(true)}).catch(function(e){toast(e.msg||'Erreur',true)})})}})))});
   m.append(zc);
-  m.append(h('div',{class:'card glass',style:'margin-top:12px'},h('h2',{text:'Sécurité'}),h('p',{class:'mu',text:'Pour changer ta clé admin : dans le Sheet, Extensions → Apps Script, choisis la fonction « nouvelleCleAdmin », clique sur Exécuter. La nouvelle clé s\'affiche une seule fois.'}),
+  var codeZone=h('div',{style:'margin-top:10px'});
+  m.append(h('div',{class:'card glass',style:'margin-top:12px'},h('h2',{text:'Sécurité'}),h('p',{class:'mu',text:'Pour changer ta clé admin : dans le Sheet, Extensions → Apps Script, choisis la fonction « nouvelleCleAdmin », clique sur Exécuter. La nouvelle clé s\'affiche une seule fois et déconnecte tous les appareils.'}),
+    h('p',{class:'mu',text:'Pour te connecter sur un autre appareil sans retaper ta clé, crée un code à usage unique (valable 10 minutes) et colle-le à la place de la clé.'}),
+    h('div',{class:'row',style:'margin-bottom:10px'},h('button',{type:'button',text:'Créer un code à usage unique',onclick:function(){call('cle_unique').then(function(r){codeZone.textContent='';codeZone.append(h('div',{class:'chip ok',style:'font-family:monospace;font-size:22px;letter-spacing:2px;display:inline-block',text:r.code}),h('p',{class:'mu',text:'Valable '+r.minutes+' minutes, une seule fois.'}))}).catch(function(e){toast(e.msg||'Erreur',true)})}}),
+      h('button',{class:'d',type:'button',text:'Déconnecter tous les appareils',onclick:function(){confirmer('Déconnecter tous les appareils ?','Tous les appareils admin (y compris celui-ci) devront se reconnecter avec ta clé.','Tout déconnecter',function(){call('deconnecter_tous').then(function(){deco()}).catch(function(e){toast(e.msg||'Erreur',true)})})}})),codeZone,
     h('div',{class:'row'},h('button',{type:'button',text:'Actualiser les chiffres',onclick:function(){charger()}}),h('button',{class:'d',type:'button',text:'Se déconnecter',onclick:deco}))))}
 
 /* ---------- données de démonstration (#demo) ---------- */
@@ -366,7 +385,7 @@ function demoStats(){var n=Date.now(),serie=[];for(var i=29;i>=0;i--){var d=new 
  familles:[{cat:'Emploi & carrière',ouv:30,cop:22,utile:5,pas:1},{cat:'Gagner de l\'argent',ouv:21,cop:14,utile:3,pas:0},{cat:'Vie quotidienne',ouv:19,cop:12,utile:4,pas:1},{cat:'Études & apprentissage',ouv:14,cop:9,utile:2,pas:2},{cat:'Contenu & réseaux',ouv:10,cop:5,utile:1,pas:0}],
  personnes:ps.slice().sort(function(a,b){return b.derniere-a.derniere}),reglages:{jours_questionnaire:4,url_site:'https://andersonsoahita-hash.github.io/Prompt-/prive/',texte_cgu:'Les ouvertures et copies de prompts ainsi que tes avis sont comptés pour améliorer Métis. Rien d\'autre n\'est collecté.'}}}
 function demoCall(op,x){if(!DM)demoInit();return new Promise(function(res,rej){setTimeout(function(){
-  if(op==='ping')return res({ok:true});if(op==='stats')return res(demoStats());if(op==='avis_liste')return res({ok:true,avis:DM.avis});if(op==='suppr_avis'){DM.avis=DM.avis.filter(function(a){return !(a.jeton===x.jeton&&a.pid===x.pid)});return res({ok:true})}if(op==='suppr_quest'){DM.quest=DM.quest.filter(function(q){return q.jeton!==x.jeton});return res({ok:true})}if(op==='purge'){if(x.cible==='avis')DM.avis=[];if(x.cible==='quest')DM.quest=[];if(x.cible==='demandes')DM.demandes=[];if(x.cible==='jetons'||x.cible==='tout'){DM.personnes=[];DM.avis=[];DM.quest=[]}if(x.cible==='tout')DM.demandes=[];return res({ok:true})}if(op==='demandes')return res({ok:true,demandes:DM.demandes});var dd=DM.demandes.filter(function(q){return q.id===x.id})[0];if(op==='valider'&&dd){dd.statut='validee';return res({ok:true,id:'t9',jeton:'K7QF-2MXD-9PWA',lien:'https://andersonsoahita-hash.github.io/Prompt-/prive/#K7QF-2MXD-9PWA',fin:Date.now()+x.jours*JOUR,mail:true})}if(op==='refuser'&&dd){dd.statut='refusee';return res({ok:true})}if(op==='suppr_demande'&&dd){DM.demandes.splice(DM.demandes.indexOf(dd),1);return res({ok:true})}if(op==='quest_liste')return res({ok:true,reponses:DM.quest});
+  if(op==='ping'||op==='deconnecter'||op==='deconnecter_tous')return res({ok:true});if(op==='cle_unique')return res({ok:true,code:'K7QF-2MXD-9PWA',minutes:10});if(op==='stats')return res(demoStats());if(op==='avis_liste')return res({ok:true,avis:DM.avis});if(op==='suppr_avis'){DM.avis=DM.avis.filter(function(a){return !(a.jeton===x.jeton&&a.pid===x.pid)});return res({ok:true})}if(op==='suppr_quest'){DM.quest=DM.quest.filter(function(q){return q.jeton!==x.jeton});return res({ok:true})}if(op==='purge'){if(x.cible==='avis')DM.avis=[];if(x.cible==='quest')DM.quest=[];if(x.cible==='demandes')DM.demandes=[];if(x.cible==='jetons'||x.cible==='tout'){DM.personnes=[];DM.avis=[];DM.quest=[]}if(x.cible==='tout')DM.demandes=[];return res({ok:true})}if(op==='demandes')return res({ok:true,demandes:DM.demandes});var dd=DM.demandes.filter(function(q){return q.id===x.id})[0];if(op==='valider'&&dd){dd.statut='validee';return res({ok:true,id:'t9',jeton:'K7QF-2MXD-9PWA',lien:'https://andersonsoahita-hash.github.io/Prompt-/prive/#K7QF-2MXD-9PWA',fin:Date.now()+x.jours*JOUR,mail:true})}if(op==='refuser'&&dd){dd.statut='refusee';return res({ok:true})}if(op==='suppr_demande'&&dd){DM.demandes.splice(DM.demandes.indexOf(dd),1);return res({ok:true})}if(op==='quest_liste')return res({ok:true,reponses:DM.quest});
   if(op==='creer'){return res({ok:true,id:'t9',jeton:'K7QF-2MXD-9PWA',lien:'https://andersonsoahita-hash.github.io/Prompt-/prive/#K7QF-2MXD-9PWA',fin:Date.now()+x.jours*JOUR,mail:!!x.email})}
   var p=DM.personnes.filter(function(q){return q.id===x.id})[0];if(p){if(op==='couper')p.statut='coupe';if(op==='reactiver')p.statut='actif';if(op==='prolonger')p.fin+=x.jours*JOUR;if(op==='liberer')p.appareil=false;if(op==='supprimer')DM.personnes.splice(DM.personnes.indexOf(p),1)}
   res({ok:true})},120)})}
@@ -385,9 +404,13 @@ function demoCall(op,x){if(!DM)demoInit();return new Promise(function(res,rej){s
 
 /* ---------- démarrage ---------- */
 (function(){
-  if(DEMO){S.key='demo';$('#login').hidden=true;demarrer();return}
-  var k='';try{k=sessionStorage.getItem('mb_k')||localStorage.getItem('mb_k')||''}catch(e){}
-  if(k&&API){S.key=k;call('ping').then(function(){demarrer()}).catch(function(){deco()});return}
+  if(DEMO){S.dt='demo';$('#login').hidden=true;demarrer();return}
+  var vieux='',enLocal=false,dt='';try{vieux=localStorage.getItem('mb_k')||'';enLocal=!!vieux;if(!vieux)vieux=sessionStorage.getItem('mb_k')||'';dt=sessionStorage.getItem('mb_dt')||localStorage.getItem('mb_dt')||''}catch(e){}
+  if(vieux&&API){   // ancienne version : la clé enregistrée est échangée une fois contre un jeton d'appareil, puis effacée
+    connexion(vieux,enLocal).then(function(j){try{sessionStorage.removeItem('mb_k');localStorage.removeItem('mb_k')}catch(e){}S.dt=j.dt;garderDt(j.dt,enLocal);demarrer()}).catch(function(e){
+      if(e&&e.code==='inconnu'){S.k=vieux;S.dt='';call('ping').then(function(){demarrer()}).catch(function(){deco()});return}   // serveur pas encore mis à jour : on ne touche à rien
+      deco()});return}
+  if(dt&&API){S.dt=dt;call('ping').then(function(){demarrer()}).catch(function(){deco()});return}
   deco()})();
 })();
 </script>
